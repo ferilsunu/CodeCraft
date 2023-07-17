@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeCraft - Code Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <h1 id="logo">CodeCraft</h1>
+        </div>
+    </header>
+    <div id="btn-container">
+        <button id="run">
+            <span class="play-icon">&#9658;</span>
+            Run
+        </button>
+    </div>
+    <main>
+
+        <div id="editor-container">
+
+        <div class="editor">
+          <p class="tags">HTML</p>
+          <div id="html-editor"></div>
+        </div>
+        <div class="editor">
+          <p class="tags">CSS</p>
+          <div id="css-editor"></div>
+        </div>
+        <div class="editor">
+          <p class="tags">JavaScript</p>
+          <div id="js-editor"></div>
+        </div>
+      
+        </div>
+
+
+
+        <div class="output">
+        
+          <iframe id="output"></iframe>
+        </div>
+      </main>
+
+
+<script src="jquery_min.js"></script>
+<script src="ace/ace.js"></script>
+<script src="ace/mode-javascript.js"></script>
+<script src="ace/mode-html.js"></script>
+<script src="ace/mode-css.js"></script>
+<script src="ace/theme-twilight.js"></script>
+<script src="ace/worker-html.js"></script>
+<script src="ace/ext-language_tools.js"></script>
+<script src="ace/worker-css.js"></script>
+<script src="ace/worker-javascript.js"></script>
+<script src="script.js"></script>
+
+
+</body>
+</html>

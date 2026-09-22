@@ -1,63 +1,640 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeCraft - Code Editor</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeCraft — Modern Cloud Web IDE & Playground</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='16 18 22 12 16 6'></polyline><polyline points='8 6 2 12 8 18'></polyline></svg>">
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Split.js for Resizable Split Panes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.5/split.min.js"></script>
+
+  <!-- Prettier for in-browser Code Formatting -->
+  <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-html.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
+
+  <!-- JSZip & FileSaver for ZIP project download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <!-- LZString for Compressed URL Sharing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+
+  <!-- Canvas Confetti for Celebration on Share / Export -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <h1 id="logo">CodeCraft</h1>
+
+  <!-- Top Navbar & Control Deck -->
+  <header id="top-navbar">
+    <div class="nav-left">
+      <!-- Brand Logo -->
+      <div class="brand">
+        <div class="brand-badge">
+          <i data-lucide="code-2" class="brand-icon"></i>
         </div>
-    </header>
-    <div id="btn-container">
-        <button id="run">
-            <span class="play-icon">&#9658;</span>
-            Run
-        </button>
+        <div class="brand-text">
+          <span class="brand-name">CodeCraft</span>
+          <span class="brand-tag">IDE</span>
+        </div>
+      </div>
+
+      <!-- Editable Project Title & Auto-Save Badge -->
+      <div class="project-title-container">
+        <input type="text" id="project-title" value="Untitled Craft" placeholder="Project Name" title="Click to rename project" />
+        <span id="save-status" class="save-status saved" title="Auto-saved to LocalStorage">
+          <i data-lucide="check" class="status-icon"></i>
+          <span class="status-text">Saved</span>
+        </span>
+      </div>
     </div>
-    <main>
 
-        <div id="editor-container">
+    <!-- Center Control Actions -->
+    <div class="nav-center">
+      <!-- Run Code Button -->
+      <button id="btn-run" class="btn btn-primary" title="Run Code (Ctrl + Enter)">
+        <i data-lucide="play" class="btn-icon fill-current"></i>
+        <span>Run</span>
+        <kbd class="btn-kbd">Ctrl+↵</kbd>
+      </button>
 
-        <div class="editor">
-          <p class="tags">HTML</p>
-          <div id="html-editor"></div>
+      <!-- Auto-Run Toggle -->
+      <label class="toggle-control" title="Auto-reload preview live on typing">
+        <input type="checkbox" id="toggle-autorun" checked />
+        <span class="toggle-slider"></span>
+        <span class="toggle-label">Auto-Run</span>
+      </label>
+
+      <!-- Format Code (Prettier) -->
+      <button id="btn-format" class="btn btn-secondary" title="Format all code with Prettier (Ctrl + Shift + F)">
+        <i data-lucide="sparkles" class="btn-icon text-amber-400"></i>
+        <span>Format</span>
+      </button>
+
+      <!-- Starter Templates Dropdown -->
+      <button id="btn-templates" class="btn btn-secondary" title="Browse Starter Templates">
+        <i data-lucide="layout-template" class="btn-icon"></i>
+        <span>Templates</span>
+      </button>
+
+      <!-- Libraries & CDNs -->
+      <button id="btn-libraries" class="btn btn-secondary" title="Add external CSS/JS CDN libraries (Tailwind, React, Three.js, etc.)">
+        <i data-lucide="package" class="btn-icon"></i>
+        <span>Packages</span>
+        <span id="library-count-badge" class="badge-pill hidden">0</span>
+      </button>
+    </div>
+
+    <!-- Right Utility Actions -->
+    <div class="nav-right">
+      <!-- Layout Mode Switcher -->
+      <div class="btn-group" title="Switch Workspace Layout">
+        <button id="btn-layout-columns" class="btn-icon-only active" title="Side-by-Side Columns">
+          <i data-lucide="columns-2"></i>
+        </button>
+        <button id="btn-layout-rows" class="btn-icon-only" title="Top-Bottom Rows">
+          <i data-lucide="rows-2"></i>
+        </button>
+        <button id="btn-layout-tabs" class="btn-icon-only" title="Single Active Tab Mode">
+          <i data-lucide="panels-top-left"></i>
+        </button>
+      </div>
+
+      <!-- Share URL Button -->
+      <button id="btn-share" class="btn btn-secondary btn-icon-text" title="Generate Shareable URL Link">
+        <i data-lucide="share-2" class="btn-icon"></i>
+        <span class="hidden-mobile">Share</span>
+      </button>
+
+      <!-- Export Dropdown Button -->
+      <div class="dropdown-container">
+        <button id="btn-export-dropdown" class="btn btn-secondary btn-icon-text" title="Export Project">
+          <i data-lucide="download" class="btn-icon"></i>
+          <span class="hidden-mobile">Export</span>
+          <i data-lucide="chevron-down" class="btn-icon-xs"></i>
+        </button>
+        <div id="export-menu" class="dropdown-menu hidden">
+          <button id="btn-export-zip" class="dropdown-item">
+            <i data-lucide="folder-archive"></i>
+            <div>
+              <div class="dropdown-title">Download ZIP Archive</div>
+              <div class="dropdown-desc">Complete project with index.html, style.css, script.js</div>
+            </div>
+          </button>
+          <button id="btn-export-html" class="dropdown-item">
+            <i data-lucide="file-code"></i>
+            <div>
+              <div class="dropdown-title">Single Standalone HTML</div>
+              <div class="dropdown-desc">Bundled self-contained HTML file</div>
+            </div>
+          </button>
         </div>
-        <div class="editor">
-          <p class="tags">CSS</p>
-          <div id="css-editor"></div>
-        </div>
-        <div class="editor">
-          <p class="tags">JavaScript</p>
-          <div id="js-editor"></div>
-        </div>
+      </div>
+
+      <!-- Saved Projects Drawer Trigger -->
+      <button id="btn-projects" class="btn btn-secondary btn-icon-text" title="Manage Saved Projects">
+        <i data-lucide="folder" class="btn-icon"></i>
+        <span class="hidden-mobile">Projects</span>
+      </button>
+
+      <!-- Settings Trigger -->
+      <button id="btn-settings" class="btn btn-icon-only" title="Editor Settings & Themes">
+        <i data-lucide="settings"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Workspace Main Container with Split.js -->
+  <div id="workspace-container">
+    
+    <!-- Left / Top: Code Editors Pane -->
+    <div id="editors-pane" class="split-pane">
       
+      <!-- Tab Header for Single-Tab Mode -->
+      <div id="editor-tabs-bar" class="hidden">
+        <button class="tab-btn active" data-editor="html">
+          <span class="lang-dot html-dot"></span>HTML
+        </button>
+        <button class="tab-btn" data-editor="css">
+          <span class="lang-dot css-dot"></span>CSS
+        </button>
+        <button class="tab-btn" data-editor="js">
+          <span class="lang-dot js-dot"></span>JavaScript
+        </button>
+      </div>
+
+      <div id="editors-wrapper">
+        <!-- 1. HTML Editor Panel -->
+        <div id="panel-html" class="editor-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="lang-icon html-tag">&lt;/&gt;</span>
+              <span>HTML</span>
+            </div>
+            <div class="panel-actions">
+              <span id="html-stats" class="panel-stats">0 lines</span>
+              <button class="btn-mini" id="btn-copy-html" title="Copy HTML to clipboard">
+                <i data-lucide="copy"></i>
+              </button>
+              <button class="btn-mini" id="btn-clear-html" title="Clear HTML">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+          <div id="html-editor" class="ace-editor-instance"></div>
         </div>
 
-
-
-        <div class="output">
-        
-          <iframe id="output"></iframe>
+        <!-- 2. CSS Editor Panel -->
+        <div id="panel-css" class="editor-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="lang-icon css-tag">#</span>
+              <span>CSS</span>
+            </div>
+            <div class="panel-actions">
+              <span id="css-stats" class="panel-stats">0 lines</span>
+              <button class="btn-mini" id="btn-copy-css" title="Copy CSS to clipboard">
+                <i data-lucide="copy"></i>
+              </button>
+              <button class="btn-mini" id="btn-clear-css" title="Clear CSS">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+          <div id="css-editor" class="ace-editor-instance"></div>
         </div>
-      </main>
 
+        <!-- 3. JS Editor Panel -->
+        <div id="panel-js" class="editor-panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span class="lang-icon js-tag">JS</span>
+              <span>JavaScript</span>
+            </div>
+            <div class="panel-actions">
+              <span id="js-stats" class="panel-stats">0 lines</span>
+              <button class="btn-mini" id="btn-copy-js" title="Copy JavaScript to clipboard">
+                <i data-lucide="copy"></i>
+              </button>
+              <button class="btn-mini" id="btn-clear-js" title="Clear JavaScript">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+          <div id="js-editor" class="ace-editor-instance"></div>
+        </div>
+      </div>
 
-<script src="jquery_min.js"></script>
-<script src="ace/ace.js"></script>
-<script src="ace/mode-javascript.js"></script>
-<script src="ace/mode-html.js"></script>
-<script src="ace/mode-css.js"></script>
-<script src="ace/theme-twilight.js"></script>
-<script src="ace/worker-html.js"></script>
-<script src="ace/ext-language_tools.js"></script>
-<script src="ace/worker-css.js"></script>
-<script src="ace/worker-javascript.js"></script>
-<script src="script.js"></script>
+    </div>
 
+    <!-- Right / Bottom: Live Preview & Virtual Console Pane -->
+    <div id="preview-pane" class="split-pane">
+      
+      <!-- Preview Header with Device Frame Selector -->
+      <div id="preview-header">
+        <div class="preview-title">
+          <span class="live-indicator"></span>
+          <span>LIVE PREVIEW</span>
+        </div>
+
+        <div class="preview-controls">
+          <!-- Responsive Viewport Presets -->
+          <div class="device-switcher" title="Simulate Viewport">
+            <button class="device-btn active" data-width="100%" title="Full Desktop (100%)">
+              <i data-lucide="monitor"></i>
+              <span>100%</span>
+            </button>
+            <button class="device-btn" data-width="768px" title="Tablet View (768px)">
+              <i data-lucide="tablet"></i>
+              <span>768px</span>
+            </button>
+            <button class="device-btn" data-width="375px" title="Mobile View (375px)">
+              <i data-lucide="smartphone"></i>
+              <span>375px</span>
+            </button>
+          </div>
+
+          <!-- Refresh Preview -->
+          <button id="btn-refresh-preview" class="btn-icon-only" title="Reload Preview (Ctrl + R inside preview)">
+            <i data-lucide="rotate-cw"></i>
+          </button>
+
+          <!-- Toggle Bottom Console -->
+          <button id="btn-toggle-console" class="btn btn-secondary btn-xs" title="Toggle Virtual Console (Ctrl + `)">
+            <i data-lucide="terminal"></i>
+            <span>Console</span>
+            <span id="console-badge" class="console-badge-count hidden">0</span>
+          </button>
+
+          <!-- Fullscreen Preview -->
+          <button id="btn-fullscreen-preview" class="btn-icon-only" title="Open Preview in Fullscreen">
+            <i data-lucide="maximize-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Iframe Canvas Wrapper -->
+      <div id="iframe-viewport-wrapper">
+        <div id="device-frame-container" style="width: 100%;">
+          <iframe 
+            id="output-iframe" 
+            title="Live Output Preview"
+            sandbox="allow-scripts allow-modals allow-forms allow-same-origin allow-popups"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- Collapsible In-App Virtual Console -->
+      <div id="virtual-console-panel" class="hidden">
+        <div class="console-header">
+          <div class="console-tabs">
+            <span class="console-title">
+              <i data-lucide="terminal" class="console-icon"></i>
+              <span>Console</span>
+            </span>
+            <button class="console-tab-btn active" data-filter="all">All</button>
+            <button class="console-tab-btn" data-filter="log">Logs</button>
+            <button class="console-tab-btn" data-filter="warn">Warnings</button>
+            <button class="console-tab-btn" data-filter="error">Errors</button>
+          </div>
+          <div class="console-actions">
+            <button id="btn-clear-console" class="btn-mini" title="Clear Console (Ctrl + L)">
+              <i data-lucide="trash-2"></i>
+              <span>Clear</span>
+            </button>
+            <button id="btn-close-console" class="btn-mini" title="Close Console">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Console Log Output List -->
+        <div id="console-logs-list" class="custom-scrollbar">
+          <div class="console-empty-msg">Console is clear. Output from console.log() and runtime errors will appear here.</div>
+        </div>
+
+        <!-- Interactive REPL Input Line -->
+        <form id="console-repl-form" class="console-repl-box">
+          <span class="repl-prompt">&gt;</span>
+          <input type="text" id="console-repl-input" placeholder="Execute JavaScript in preview..." autocomplete="off" />
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODALS & DRAWERS                                                          -->
+  <!-- ========================================================================= -->
+
+  <!-- 1. Starter Templates Modal -->
+  <div id="modal-templates" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge">
+            <i data-lucide="layout-template"></i>
+          </div>
+          <div>
+            <h3 class="modal-heading">Starter Templates</h3>
+            <p class="modal-subheading">Jumpstart your development with pre-built, modern interactive blueprints.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="modal-templates">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="templates-grid">
+        <!-- Template 1: Tailwind Glass Card -->
+        <div class="template-card" data-template="tailwind-card">
+          <div class="template-badge bg-emerald-500/10 text-emerald-400">Tailwind CSS</div>
+          <h4 class="template-title">Neon Glassmorphic Card</h4>
+          <p class="template-desc">Modern frosted glass card component with animated gradient borders and Tailwind styling.</p>
+        </div>
+
+        <!-- Template 2: React 18 Counter -->
+        <div class="template-card" data-template="react-counter">
+          <div class="template-badge bg-cyan-500/10 text-cyan-400">React 18 + Babel</div>
+          <h4 class="template-title">Interactive React Counter</h4>
+          <p class="template-desc">Live JSX rendering using React Hooks (`useState`), pulse animation, and state feedback.</p>
+        </div>
+
+        <!-- Template 3: Three.js 3D Neon Cube -->
+        <div class="template-card" data-template="threejs-cube">
+          <div class="template-badge bg-purple-500/10 text-purple-400">Three.js 3D</div>
+          <h4 class="template-title">Rotating 3D Neon Cube</h4>
+          <p class="template-desc">Interactive WebGL 3D cube with mouse-tracking lighting, wireframe glow, and particle field.</p>
+        </div>
+
+        <!-- Template 4: HTML5 Canvas Particles -->
+        <div class="template-card" data-template="canvas-particles">
+          <div class="template-badge bg-amber-500/10 text-amber-400">Canvas 2D</div>
+          <h4 class="template-title">Interactive Particle Physics</h4>
+          <p class="template-desc">High-performance 60FPS mouse-attracting particle web simulation built on vanilla Canvas API.</p>
+        </div>
+
+        <!-- Template 5: Blank Slate -->
+        <div class="template-card" data-template="blank">
+          <div class="template-badge bg-neutral-500/10 text-neutral-400">Clean Slate</div>
+          <h4 class="template-title">Minimal Starter</h4>
+          <p class="template-desc">Fresh, minimal boilerplate ready for your next creative code experiment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Libraries & CDNs Modal -->
+  <div id="modal-libraries" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge">
+            <i data-lucide="package"></i>
+          </div>
+          <div>
+            <h3 class="modal-heading">External Libraries & Packages</h3>
+            <p class="modal-subheading">Inject popular CDNs or add custom stylesheet/script links.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="modal-libraries">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Quick CDN Toggles Grid -->
+      <div class="libraries-grid">
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="tailwind" />
+          <div class="lib-info">
+            <span class="lib-name">Tailwind CSS 3.x</span>
+            <span class="lib-desc">Utility-first CSS framework via official CDN script</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="react" />
+          <div class="lib-info">
+            <span class="lib-name">React 18 & Babel</span>
+            <span class="lib-desc">React, ReactDOM, and in-browser Babel JSX transpiler</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="bootstrap" />
+          <div class="lib-info">
+            <span class="lib-name">Bootstrap 5.3</span>
+            <span class="lib-desc">Complete CSS components and JS bundle</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="threejs" />
+          <div class="lib-info">
+            <span class="lib-name">Three.js</span>
+            <span class="lib-desc">WebGL 3D graphics library</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="gsap" />
+          <div class="lib-info">
+            <span class="lib-name">GSAP (GreenSock)</span>
+            <span class="lib-desc">High-performance JavaScript animation engine</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="chartjs" />
+          <div class="lib-info">
+            <span class="lib-name">Chart.js 4.x</span>
+            <span class="lib-desc">Flexible HTML5 data visualization charts</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="fontawesome" />
+          <div class="lib-info">
+            <span class="lib-name">FontAwesome 6</span>
+            <span class="lib-desc">Vector icons and social brands library</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="animatecss" />
+          <div class="lib-info">
+            <span class="lib-name">Animate.css</span>
+            <span class="lib-desc">Cross-browser CSS animation classes</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+
+        <label class="lib-toggle-card">
+          <input type="checkbox" data-lib="jquery" />
+          <div class="lib-info">
+            <span class="lib-name">jQuery 3.7</span>
+            <span class="lib-desc">Classic DOM manipulation utility</span>
+          </div>
+          <div class="lib-checkbox-indicator"></div>
+        </label>
+      </div>
+
+      <!-- Custom CDN Input Line -->
+      <div class="custom-cdn-box">
+        <label class="form-label">Add Custom CDN URL (CSS or JS):</label>
+        <div class="custom-cdn-input-row">
+          <input type="url" id="custom-cdn-input" placeholder="https://cdn.jsdelivr.net/npm/..." />
+          <button id="btn-add-custom-cdn" class="btn btn-secondary">
+            <i data-lucide="plus"></i>
+            <span>Add</span>
+          </button>
+        </div>
+        <div id="custom-cdns-list" class="custom-cdns-tags"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Saved Projects Drawer -->
+  <div id="drawer-projects" class="drawer-backdrop hidden">
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <i data-lucide="folder" class="drawer-icon"></i>
+          <div>
+            <h3 class="drawer-heading">Saved Projects</h3>
+            <p class="drawer-subheading">Local workspace snippets stored in your browser.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="drawer-projects">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="drawer-actions">
+        <button id="btn-save-new-project" class="btn btn-primary w-full">
+          <i data-lucide="plus"></i>
+          <span>Save Current Code as New Snippet</span>
+        </button>
+      </div>
+
+      <div id="projects-list" class="projects-list-container custom-scrollbar">
+        <!-- Dynamically rendered project cards -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Settings Modal -->
+  <div id="modal-settings" class="modal-backdrop hidden">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge">
+            <i data-lucide="settings"></i>
+          </div>
+          <div>
+            <h3 class="modal-heading">Editor Preferences</h3>
+            <p class="modal-subheading">Customize themes, typography, and editor behaviors.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close="modal-settings">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="settings-form">
+        <!-- Theme Selection -->
+        <div class="form-group">
+          <label class="form-label">Editor Color Theme</label>
+          <select id="setting-theme" class="form-select">
+            <option value="twilight" selected>Twilight (Dark Default)</option>
+            <option value="dracula">Dracula (Vibrant)</option>
+            <option value="monokai">Monokai (Warm)</option>
+            <option value="one_dark">One Dark (Atom)</option>
+            <option value="nord_dark">Nord (Cool Blue)</option>
+            <option value="tomorrow_night">Tomorrow Night</option>
+            <option value="chrome">Chrome (Light)</option>
+            <option value="github">GitHub Light</option>
+          </select>
+        </div>
+
+        <!-- Font Size Selection -->
+        <div class="form-group">
+          <label class="form-label flex-between">
+            <span>Font Size</span>
+            <span id="font-size-label" class="font-mono text-xs text-amber-400">14px</span>
+          </label>
+          <input type="range" id="setting-font-size" min="11" max="22" value="14" step="1" class="form-range" />
+        </div>
+
+        <!-- Word Wrap Toggle -->
+        <div class="form-group flex-between">
+          <div>
+            <div class="form-label-inline">Soft Line Wrap</div>
+            <div class="form-hint">Wrap long code lines without horizontal scrolling</div>
+          </div>
+          <label class="toggle-control">
+            <input type="checkbox" id="setting-word-wrap" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- Live Auto-Completion Toggle -->
+        <div class="form-group flex-between">
+          <div>
+            <div class="form-label-inline">Live Autocompletion</div>
+            <div class="form-hint">Show smart suggestions while typing</div>
+          </div>
+          <label class="toggle-control">
+            <input type="checkbox" id="setting-autocomplete" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- Line Numbers Toggle -->
+        <div class="form-group flex-between">
+          <div>
+            <div class="form-label-inline">Show Line Numbers</div>
+            <div class="form-hint">Display gutter line numbering</div>
+          </div>
+          <label class="toggle-control">
+            <input type="checkbox" id="setting-line-numbers" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Ace Editor Core & Modes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ext-language_tools.min.js"></script>
+
+  <!-- Core App Logic -->
+  <script src="script.js"></script>
 
 </body>
 </html>

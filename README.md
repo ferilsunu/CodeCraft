@@ -9,13 +9,63 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-34d399?style=for-the-badge)](LICENSE)
 
 <p align="center">
-  <b>An ultra-fast, zero-config, in-browser web playground and IDE for HTML5, CSS3, and modern JavaScript.</b><br>
+  <b>An ultra-fast, modular in-browser web playground and IDE for HTML5, CSS3, and modern JavaScript.</b><br>
   Equipped with live preview, in-app virtual console, Prettier formatter, responsive device frames, starter templates, CDN package injector, compressed URL sharing, and 1-click ZIP export.
 </p>
 
 [**Explore Live Demo 🚀**](https://ferilsunu.github.io/CodeCraft/) · [**Report Bug 🐛**](https://github.com/ferilsunu/CodeCraft/issues) · [**Request Feature 💡**](https://github.com/ferilsunu/CodeCraft/issues)
 
 </div>
+
+---
+
+## 📁 Professional Modular Architecture
+
+```text
+CodeCraft/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # GitHub Actions CI/CD to GitHub Pages
+├── public/
+│   └── favicon.svg             # Vector brand icon
+├── src/
+│   ├── config/
+│   │   ├── cdns.js             # CDN packages catalog & scripts registry
+│   │   └── templates.js        # Starter blueprints (Tailwind, React, Three.js, Canvas)
+│   ├── core/
+│   │   ├── editor.js           # Ace Editor controller, themes & line stats
+│   │   ├── layout.js           # Split.js multi-column / multi-row / tab engine
+│   │   ├── runner.js           # Live preview compiler & sandbox isolator
+│   │   └── state.js            # Central reactive store & event bus
+│   ├── modules/
+│   │   ├── console.js          # In-app virtual DevTools console & REPL
+│   │   ├── exporter.js         # ZIP archive builder & standalone HTML bundler
+│   │   ├── formatter.js        # Prettier in-browser code beautifier
+│   │   ├── share.js            # LZ-String URL hash compressor & confetti
+│   │   └── storage.js          # LocalStorage project manager & preferences
+│   ├── styles/
+│   │   ├── base.css            # CSS reset & core utilities
+│   │   ├── console.css         # Virtual console & REPL theme
+│   │   ├── editor.css          # Ace editor panels & tab controls
+│   │   ├── layout.css          # Split.js gutters & responsive layout
+│   │   ├── main.css            # Master stylesheet index
+│   │   ├── modals.css          # Modals, drawer & library injector grid
+│   │   ├── navbar.css          # Top navigation & control deck
+│   │   ├── preview.css         # Device simulation frame & toolbar
+│   │   ├── toast.css           # Animated toast notifications
+│   │   └── variables.css       # Design tokens & color palette
+│   ├── ui/
+│   │   ├── drawer.js           # Saved projects drawer manager
+│   │   ├── modals.js           # Templates & CDN settings dialogs
+│   │   ├── shortcuts.js        # Keyboard shortcut listeners
+│   │   └── toast.js            # Global toast dispatcher
+│   └── main.js                 # Application bootstrap entry point
+├── index.html                  # Semantic HTML5 shell loading ES Modules
+├── package.json                # Modern build scripts & dependencies
+├── vite.config.js              # High-performance Vite build config
+├── .gitignore                  # Git ignore rules
+└── README.md                   # Comprehensive documentation
+```
 
 ---
 
@@ -90,7 +140,8 @@ Jumpstart experiments with pre-built production-grade blueprints:
 
 ## 🛠️ Tech Stack & Dependencies
 
-- **Core**: Vanilla HTML5, Modern CSS3 (Custom Properties & Flexbox/Grid), ES6+ JavaScript
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Core Architecture**: Native ES Modules (ESM), Modern CSS Custom Properties & Flexbox/Grid
 - **Code Editor**: [Ace Editor](https://ace.c9.io/) (`ace.js`) with Language Tools & Autocompletion
 - **Split Panes**: [Split.js](https://split.js.org/)
 - **Formatting**: [Prettier Standalone](https://prettier.io/)
@@ -101,29 +152,31 @@ Jumpstart experiments with pre-built production-grade blueprints:
 
 ---
 
-## 🚀 Getting Started Locally
+## 🚀 Development & Build Workflow
 
-No complex build setups, Node.js installation, or bundlers required!
+### 1. Clone & Install
+```bash
+git clone https://github.com/ferilsunu/CodeCraft.git
+cd CodeCraft
+npm install
+```
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/ferilsunu/CodeCraft.git
-   cd CodeCraft
-   ```
+### 2. Start Local Development Server
+```bash
+npm run dev
+```
+Launches Vite dev server with instant Hot Module Replacement (HMR) at `http://localhost:3000`.
 
-2. **Launch with any local HTTP server**:
-   ```bash
-   # Using Python 3
-   python3 -m http.server 8000
+### 3. Build for Production
+```bash
+npm run build
+```
+Creates an optimized, minified bundle inside the `dist/` directory ready for deployment.
 
-   # Or using Node.js / npx
-   npx serve .
-
-   # Or using VS Code "Live Server" extension
-   ```
-
-3. **Open in browser**:
-   Navigate to `http://localhost:8000`.
+### 4. Preview Production Build
+```bash
+npm run preview
+```
 
 ---
 

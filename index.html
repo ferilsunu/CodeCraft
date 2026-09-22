@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CodeCraft — Modern Cloud Web IDE & Playground</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='16 18 22 12 16 6'></polyline><polyline points='8 6 2 12 8 18'></polyline></svg>">
+  <link rel="icon" type="image/svg+xml" href="public/favicon.svg">
   
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,8 +33,8 @@
   <!-- Canvas Confetti for Celebration on Share / Export -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Modular Master Stylesheet -->
+  <link rel="stylesheet" href="src/styles/main.css">
 </head>
 <body>
 
@@ -633,8 +633,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ext-language_tools.min.js"></script>
 
-  <!-- Core App Logic -->
-  <script src="script.js"></script>
+  <!-- Core Application Module Entry -->
+  <script type="module" src="src/main.js"></script>
 
 </body>
 </html>

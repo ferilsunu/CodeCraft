@@ -1,0 +1,30 @@
+{
+  "name": "codecraft",
+  "version": "2.0.0",
+  "description": "Modern Cloud Web IDE & In-Browser Playground",
+  "private": false,
+  "author": "Feril Sunu <ferilsunu@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ferilsunu/CodeCraft.git"
+  },
+  "keywords": [
+    "web-ide",
+    "code-editor",
+    "javascript-playground",
+    "html-css-js",
+    "split-js",
+    "ace-editor",
+    "prettier"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.2"
+  }
+}

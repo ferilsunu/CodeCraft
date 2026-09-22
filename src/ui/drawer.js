@@ -3,7 +3,7 @@
  */
 
 import { state } from '../core/state.js';
-import { getAllSavedProjects, saveActiveProject, applyProjectData } from '../modules/storage.js';
+import { getAllSavedProjects, saveActiveProject, applyProjectData } from '../core/project.js';
 import { closeAllModals } from './modals.js';
 import { showToast } from './toast.js';
 

@@ -28,6 +28,7 @@ export function initEditors() {
       });
     });
 
+    window.getCodeExport = getCode;
     updateStats();
   }
 }

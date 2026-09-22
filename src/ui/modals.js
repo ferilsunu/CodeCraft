@@ -3,11 +3,10 @@
  */
 
 import { state } from '../core/state.js';
-import { TEMPLATES } from '../config/templates.js';
-import { setCode, updateStats, updateEditorPreferences } from '../core/editor.js';
+import { updateEditorPreferences } from '../core/editor.js';
 import { runCode } from '../core/runner.js';
-import { saveActiveProject, saveSettings } from '../modules/storage.js';
-import { showToast } from './toast.js';
+import { applyTemplate, saveActiveProject, updateCdnBadge, renderCustomCdnTags } from '../core/project.js';
+import { saveSettings } from '../modules/storage.js';
 
 export function initModals() {
   const btnTemplates = document.getElementById('btn-templates');
@@ -94,81 +93,6 @@ export function closeAllModals() {
   document.querySelectorAll('.modal-backdrop, .drawer-backdrop').forEach(el => el.classList.add('hidden'));
   const exportMenu = document.getElementById('export-menu');
   if (exportMenu) exportMenu.classList.add('hidden');
-}
-
-export function applyTemplate(tplKey) {
-  const tpl = TEMPLATES[tplKey];
-  if (!tpl) return;
-
-  state.projectId = 'craft_' + Date.now();
-  state.title = tpl.title;
-  
-  const titleInput = document.getElementById('project-title');
-  if (titleInput) titleInput.value = tpl.title;
-
-  state.cdns = Object.assign({
-    tailwind: false, react: false, bootstrap: false, threejs: false,
-    gsap: false, chartjs: false, fontawesome: false, animatecss: false,
-    jquery: false, custom: []
-  }, tpl.cdns || {});
-
-  syncCdnCheckboxes();
-  updateCdnBadge();
-  setCode({ html: tpl.html || '', css: tpl.css || '', js: tpl.js || '' });
-
-  updateStats();
-  runCode();
-  saveActiveProject();
-  closeAllModals();
-  showToast(`Loaded template: ${tpl.title}`, 'success');
-}
-
-export function syncCdnCheckboxes() {
-  document.querySelectorAll('.lib-toggle-card input[data-lib]').forEach(input => {
-    const libKey = input.getAttribute('data-lib');
-    input.checked = !!state.cdns[libKey];
-  });
-  renderCustomCdnTags();
-}
-
-export function renderCustomCdnTags() {
-  const container = document.getElementById('custom-cdns-list');
-  if (!container) return;
-
-  container.innerHTML = state.cdns.custom.map((url, idx) => `
-    <span class="cdn-tag">
-      <span>${url.split('/').pop() || url}</span>
-      <i data-lucide="x" class="cdn-tag-delete" data-index="${idx}"></i>
-    </span>
-  `).join('');
-
-  if (window.lucide) window.lucide.createIcons();
-
-  container.querySelectorAll('.cdn-tag-delete').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.getAttribute('data-index'), 10);
-      state.cdns.custom.splice(idx, 1);
-      renderCustomCdnTags();
-      updateCdnBadge();
-      runCode();
-      saveActiveProject();
-    });
-  });
-}
-
-export function updateCdnBadge() {
-  let count = Object.keys(state.cdns).filter(k => k !== 'custom' && state.cdns[k]).length;
-  count += (state.cdns.custom || []).length;
-
-  const badge = document.getElementById('library-count-badge');
-  if (badge) {
-    if (count > 0) {
-      badge.textContent = count;
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
-    }
-  }
 }
 
 function syncSettingsUI() {

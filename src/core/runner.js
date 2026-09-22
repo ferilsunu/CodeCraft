@@ -10,13 +10,15 @@ import { clearConsole } from '../modules/console.js';
 let autoRunTimer = null;
 
 export function buildPreviewHTML() {
-  const { html, css, js } = getCode();
+  const { html, css, js } = (typeof window.getCodeExport === 'function')
+    ? window.getCodeExport()
+    : getCode();
 
   // Generate CDN Tags
   let cdnTags = '';
   Object.keys(state.cdns).forEach(key => {
     if (key === 'custom') {
-      state.cdns.custom.forEach(url => {
+      (state.cdns.custom || []).forEach(url => {
         if (url.endsWith('.css') || url.includes('/css')) {
           cdnTags += `<link rel="stylesheet" href="${url}">\n`;
         } else {
@@ -102,14 +104,14 @@ export function buildPreviewHTML() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   ${cdnTags}
   <style>
-    ${cssCode}
+    ${css || ''}
   </style>
   ${consoleInterceptor}
 </head>
 <body>
-  ${htmlCode}
+  ${html || ''}
   <script type="${scriptType}">
-    ${jsCode}
+    ${js || ''}
   <\/script>
 </body>
 </html>`;
@@ -121,17 +123,10 @@ export function runCode() {
   const iframe = document.getElementById('output-iframe');
   if (!iframe) return;
 
-  if ('srcdoc' in iframe) {
-    iframe.srcdoc = previewContent;
-  } else {
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(previewContent);
-    doc.close();
-  }
+  iframe.srcdoc = previewContent;
 }
 
 export function triggerAutoRunDebounce() {
   clearTimeout(autoRunTimer);
-  autoRunTimer = setTimeout(runCode, 500);
+  autoRunTimer = setTimeout(runCode, 400);
 }

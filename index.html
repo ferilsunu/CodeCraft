@@ -102,13 +102,13 @@
     <div class="nav-right">
       <!-- Layout Mode Switcher -->
       <div class="btn-group" title="Switch Workspace Layout">
-        <button id="btn-layout-columns" class="btn-icon-only active" title="Side-by-Side Columns">
+        <button id="btn-layout-columns" class="btn-icon-only" title="Side-by-Side Columns">
           <i data-lucide="columns-2"></i>
         </button>
         <button id="btn-layout-rows" class="btn-icon-only" title="Top-Bottom Rows">
           <i data-lucide="rows-2"></i>
         </button>
-        <button id="btn-layout-tabs" class="btn-icon-only" title="Single Active Tab Mode">
+        <button id="btn-layout-tabs" class="btn-icon-only active" title="Single Active Tab Mode">
           <i data-lucide="panels-top-left"></i>
         </button>
       </div>
@@ -164,7 +164,7 @@
     <div id="editors-pane" class="split-pane">
       
       <!-- Tab Header for Single-Tab Mode -->
-      <div id="editor-tabs-bar" class="hidden">
+      <div id="editor-tabs-bar">
         <button class="tab-btn active" data-editor="html">
           <span class="lang-dot html-dot"></span>HTML
         </button>

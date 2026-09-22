@@ -1,4 +1,4 @@
-# ⚡ CodeCraft — Modern Cloud Web IDE & Playground
+# CodeCraft — Modern Cloud Web IDE & Playground
 
 <div align="center">
 
@@ -13,13 +13,13 @@
   Equipped with live preview, in-app virtual console, Prettier formatter, responsive device frames, starter templates, CDN package injector, compressed URL sharing, and 1-click ZIP export.
 </p>
 
-[**Explore Live Demo 🚀**](https://ferilsunu.github.io/CodeCraft/) · [**Report Bug 🐛**](https://github.com/ferilsunu/CodeCraft/issues) · [**Request Feature 💡**](https://github.com/ferilsunu/CodeCraft/issues)
+[**Explore Live Demo**](https://ferilsunu.github.io/CodeCraft/) | [**Report Bug**](https://github.com/ferilsunu/CodeCraft/issues) | [**Request Feature**](https://github.com/ferilsunu/CodeCraft/issues)
 
 </div>
 
 ---
 
-## 📁 Professional Modular Architecture
+## Architecture & File Structure
 
 ```text
 CodeCraft/
@@ -30,38 +30,39 @@ CodeCraft/
 │   └── favicon.svg             # Vector brand icon
 ├── src/
 │   ├── config/
-│   │   ├── cdns.js             # CDN packages catalog & scripts registry
+│   │   ├── cdns.js             # CDN packages catalog and scripts registry
 │   │   └── templates.js        # Starter blueprints (Tailwind, React, Three.js, Canvas)
 │   ├── core/
-│   │   ├── editor.js           # Ace Editor controller, themes & line stats
+│   │   ├── editor.js           # Ace Editor controller, themes and line stats
 │   │   ├── layout.js           # Split.js multi-column / multi-row / tab engine
-│   │   ├── runner.js           # Live preview compiler & sandbox isolator
-│   │   └── state.js            # Central reactive store & event bus
+│   │   ├── project.js          # Project manager, template loader and auto-save
+│   │   ├── runner.js           # Live preview compiler and sandbox isolator
+│   │   └── state.js            # Central reactive store and event bus
 │   ├── modules/
-│   │   ├── console.js          # In-app virtual DevTools console & REPL
-│   │   ├── exporter.js         # ZIP archive builder & standalone HTML bundler
+│   │   ├── console.js          # In-app virtual DevTools console and REPL
+│   │   ├── exporter.js         # ZIP archive builder and standalone HTML bundler
 │   │   ├── formatter.js        # Prettier in-browser code beautifier
-│   │   ├── share.js            # LZ-String URL hash compressor & confetti
-│   │   └── storage.js          # LocalStorage project manager & preferences
+│   │   ├── share.js            # LZ-String URL hash compressor and confetti
+│   │   └── storage.js          # LocalStorage persistence and preferences
 │   ├── styles/
-│   │   ├── base.css            # CSS reset & core utilities
-│   │   ├── console.css         # Virtual console & REPL theme
-│   │   ├── editor.css          # Ace editor panels & tab controls
-│   │   ├── layout.css          # Split.js gutters & responsive layout
+│   │   ├── base.css            # CSS reset and core utilities
+│   │   ├── console.css         # Virtual console and REPL theme
+│   │   ├── editor.css          # Ace editor panels and tab controls
+│   │   ├── layout.css          # Split.js gutters and responsive layout
 │   │   ├── main.css            # Master stylesheet index
-│   │   ├── modals.css          # Modals, drawer & library injector grid
-│   │   ├── navbar.css          # Top navigation & control deck
-│   │   ├── preview.css         # Device simulation frame & toolbar
+│   │   ├── modals.css          # Modals, drawer and library injector grid
+│   │   ├── navbar.css          # Top navigation and control deck
+│   │   ├── preview.css         # Device simulation frame and toolbar
 │   │   ├── toast.css           # Animated toast notifications
-│   │   └── variables.css       # Design tokens & color palette
+│   │   └── variables.css       # Design tokens and color palette
 │   ├── ui/
 │   │   ├── drawer.js           # Saved projects drawer manager
-│   │   ├── modals.js           # Templates & CDN settings dialogs
+│   │   ├── modals.js           # Templates and CDN settings dialogs
 │   │   ├── shortcuts.js        # Keyboard shortcut listeners
 │   │   └── toast.js            # Global toast dispatcher
 │   └── main.js                 # Application bootstrap entry point
 ├── index.html                  # Semantic HTML5 shell loading ES Modules
-├── package.json                # Modern build scripts & dependencies
+├── package.json                # Modern build scripts and dependencies
 ├── vite.config.js              # High-performance Vite build config
 ├── .gitignore                  # Git ignore rules
 └── README.md                   # Comprehensive documentation
@@ -69,32 +70,32 @@ CodeCraft/
 
 ---
 
-## ✨ Highlights & Key Features
+## Features
 
-### 🎛️ 1. Flexible Split-Pane Workspace
-- **Multi-Layout Modes**: Seamlessly toggle between **Side-by-Side (Columns)**, **Top-Bottom (Rows)**, or focused **Single-Tab View**.
-- **Smooth Dragging**: Powered by [Split.js](https://split.js.org/) for buttery-smooth resizable panels.
+### 1. Flexible Split-Pane Workspace
+- **Multi-Layout Modes**: Seamlessly toggle between **Single-Tab View** (default), **Side-by-Side (Columns)**, or **Top-Bottom (Rows)**.
+- **Smooth Dragging**: Powered by [Split.js](https://split.js.org/) for resizable panels.
 - **Ace Editor Integration**: Syntax highlighting, auto-closing brackets, line numbering, customizable font size, and multiple themes (*Twilight, Dracula, Monokai, One Dark, Nord, Chrome, GitHub*).
 
-### ⚡ 2. Instant Live Sandbox & Auto-Reload
+### 2. Instant Live Sandbox & Auto-Reload
 - Real-time debounced auto-reload as you type (toggleable on/off).
 - Immediate force execution shortcut (`Ctrl + Enter`).
 - Safe sandbox iframe isolation for running experimental code securely.
 
-### 🖥️ 3. In-App Virtual DevTools Console & REPL
-- **No need to open F12 DevTools!** Logs (`console.log`, `console.info`), warnings (`console.warn`), and runtime errors (`window.onerror`) stream directly into the built-in virtual console.
+### 3. In-App Virtual DevTools Console & REPL
+- **No need to open browser DevTools**: Logs (`console.log`, `console.info`), warnings (`console.warn`), and runtime errors (`window.onerror`) stream directly into the built-in virtual console.
 - **Interactive REPL**: Execute JavaScript commands directly against the live sandbox environment.
 - **Category Filters**: Filter between *All*, *Logs*, *Warnings*, and *Errors* with real-time error badge counters.
 
-### 🎨 4. In-Browser Prettier Code Formatting
+### 4. In-Browser Prettier Code Formatting
 - 1-Click code beautifier powered by [Prettier](https://prettier.io/) standalone (`Ctrl + Shift + F`).
 - Automatically formats HTML (`parser-html`), CSS (`parser-postcss`), and JavaScript (`parser-babel`).
 
-### 📱 5. Responsive Device Simulator
+### 5. Responsive Device Simulator
 - Switch between **100% Desktop**, **768px Tablet**, and **375px Mobile** viewport presets to test responsive designs instantly.
 - One-click **Fullscreen Mode** for distraction-free presentations.
 
-### 📦 6. 1-Click CDN Package Injector
+### 6. 1-Click CDN Package Injector
 - Pre-configured quick toggles for popular libraries:
   - **Tailwind CSS 3.x**
   - **React 18 & Babel JSX Transpiler**
@@ -107,27 +108,27 @@ CodeCraft/
   - **jQuery 3.7**
 - **Custom CDN Support**: Add any external CSS or JS URL from jsDelivr, cdnjs, or unpkg.
 
-### 🚀 7. Interactive Starter Templates Gallery
-Jumpstart experiments with pre-built production-grade blueprints:
+### 7. Interactive Starter Templates Gallery
+Jumpstart experiments with pre-built blueprints:
 1. **Neon Glassmorphic Card** *(Tailwind CSS + FontAwesome)*
 2. **React 18 Interactive Counter** *(React Hooks + Tailwind + Babel)*
 3. **Rotating 3D Neon Cube** *(Three.js WebGL)*
 4. **Interactive Particle Physics** *(Vanilla HTML5 Canvas 2D)*
 5. **Clean Minimal Starter** *(Zero-dependency boilerplate)*
 
-### 💾 8. LocalStorage Snippet Manager & URL Hash Sharing
-- **Auto-Save**: Never lose your work; changes auto-save silently to your browser.
+### 8. LocalStorage Snippet Manager & URL Hash Sharing
+- **Auto-Save**: Changes auto-save silently to your browser.
 - **Project Drawer**: Name, save, manage, switch, and delete multiple code snippets.
-- **LZ-String Compressed Sharing**: Share full projects with a single compressed URL hash (`#code=...`) without needing a backend server!
-- **Celebration Confetti**: Rewarding visual feedback upon link sharing and exporting.
+- **LZ-String Compressed Sharing**: Share full projects with a single compressed URL hash (`#code=...`) without needing a backend server.
+- **Celebration Confetti**: Visual feedback upon link sharing and exporting.
 
-### 📦 9. One-Click Project Export
+### 9. One-Click Project Export
 - **Download ZIP Archive**: Bundles clean `index.html`, `style.css`, and `script.js` with linked CDNs via [JSZip](https://stuk.github.io/jszip/) and [FileSaver.js](https://github.com/eligrey/FileSaver.js/).
 - **Standalone HTML Export**: Generates a self-contained, single `.html` file ready for sharing or immediate offline hosting.
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 | Shortcut | Action |
 | :--- | :--- |
@@ -138,7 +139,7 @@ Jumpstart experiments with pre-built production-grade blueprints:
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## Tech Stack & Dependencies
 
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **Core Architecture**: Native ES Modules (ESM), Modern CSS Custom Properties & Flexbox/Grid
@@ -152,7 +153,7 @@ Jumpstart experiments with pre-built production-grade blueprints:
 
 ---
 
-## 🚀 Development & Build Workflow
+## Development & Build Workflow
 
 ### 1. Clone & Install
 ```bash
@@ -180,9 +181,9 @@ npm run preview
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions, issues, and feature requests are welcome!
+Contributions, issues, and feature requests are welcome.
 Feel free to check the [issues page](https://github.com/ferilsunu/CodeCraft/issues).
 
 1. Fork the Project
@@ -193,10 +194,10 @@ Feel free to check the [issues page](https://github.com/ferilsunu/CodeCraft/issu
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/ferilsunu">Feril Sunu</a></sub>
+  <sub>Built by <a href="https://github.com/ferilsunu">Feril Sunu</a></sub>
 </div>

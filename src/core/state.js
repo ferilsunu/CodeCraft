@@ -6,7 +6,7 @@ export const state = {
   projectId: 'default_craft',
   title: 'Untitled Craft',
   autoRun: true,
-  layout: 'columns', // 'columns' | 'rows' | 'tabs'
+  layout: 'tabs', // 'tabs' is the default view mode
   activeTab: 'html',
   deviceWidth: '100%',
   theme: 'twilight',

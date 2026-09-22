@@ -4,7 +4,7 @@
 
 import { state } from '../core/state.js';
 import { getCode } from '../core/editor.js';
-import { applyProjectData } from './storage.js';
+import { applyProjectData } from '../core/project.js';
 import { showToast } from '../ui/toast.js';
 
 export function shareURL() {
@@ -26,7 +26,7 @@ export function shareURL() {
       const shareableUrl = `${window.location.origin}${window.location.pathname}#code=${compressed}`;
 
       navigator.clipboard.writeText(shareableUrl).then(() => {
-        showToast('🔗 Share link copied to clipboard!', 'success');
+        showToast('Share link copied to clipboard!', 'success');
         triggerConfetti();
       }).catch(() => {
         prompt('Copy your share URL:', shareableUrl);
